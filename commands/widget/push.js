@@ -6,7 +6,7 @@ import { api } from '../../api.js';
 import { connectCommand } from '../../commands/widget/connect.js';
 import { requireToken } from '../../config.js';
 import { compileScss } from '../../lib/scss-compiler.js';
-import { readCssPreview, readHtml, readScss } from '../../lib/widget-fs.js';
+import { readCssPreview, readHtml, readScss, sanitizeCopyableClass } from '../../lib/widget-fs.js';
 import { resolveOrPick } from '../../lib/widget-picker.js';
 import { sprintf } from '../../utils/sprintf.js';
 export const pushCommand = async ({ id, yes }) => {
@@ -38,9 +38,10 @@ export const pushCommand = async ({ id, yes }) => {
     const flushSpinner = ora('Deleting old elements...').start();
     await api.flushWidget(config.token, widgetId, config.api_url);
     flushSpinner.succeed('Old elements deleted');
+    const copyableClass = sanitizeCopyableClass(widget.meta.copyable_class);
     const uploadSpinner = ora(sprintf('Pushing %s elements...', parsed.widget.length)).start();
-    await api.pushWidget(config.token, widgetId, parsed.widget, config.api_url);
-    uploadSpinner.succeed('Elements pushed');
+    await api.pushWidget(config.token, widgetId, parsed.widget, copyableClass, config.api_url);
+    uploadSpinner.succeed(sprintf('Elements pushed (%s copyable class%s)', copyableClass.length, copyableClass.length === 1 ? '' : 'es'));
     const cssSpinner = ora('Pushing CSS...').start();
     const scssSource = fs.readFileSync(scssPath, 'utf8');
     await api.updateCss(config.token, widgetId, { css, scss: scssSource, cssPreview, htmlSource: html }, config.api_url);

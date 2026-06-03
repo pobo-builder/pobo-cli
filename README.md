@@ -6,7 +6,7 @@ CLI tool for creating widgets for Pobo Page Builder locally in your editor (HTML
 [![Node](https://img.shields.io/badge/node-%E2%89%A520.12-brightgreen.svg)](https://nodejs.org/)
 [![npm](https://img.shields.io/npm/v/@pobo/cli.svg)](https://www.npmjs.com/package/@pobo/cli)
 
-> **About this repository:** This is the public **build artifact mirror** of [`@pobo/cli`](https://www.npmjs.com/package/@pobo/cli). Source code lives in a private repository; this mirror exists so anyone can audit the JavaScript that ships to npm. The contents here are produced by the same release pipeline that publishes to npm, and you can verify integrity by comparing `npm pack @pobo/cli@2.0.0` against this repo at tag `v2.0.0`.
+> **About this repository:** This is the public **build artifact mirror** of [`@pobo/cli`](https://www.npmjs.com/package/@pobo/cli). Source code lives in a private repository; this mirror exists so anyone can audit the JavaScript that ships to npm. The contents here are produced by the same release pipeline that publishes to npm, and you can verify integrity by comparing `npm pack @pobo/cli@2.1.0` against this repo at tag `v2.1.0`.
 
 ---
 
@@ -233,8 +233,8 @@ Run `pobo doctor` first — it checks Node version, config file, API reachabilit
 Compare the npm tarball against this repo at the matching tag:
 
 ```bash
-npm pack @pobo/cli@2.0.0            # downloads pobo-cli-2.0.0.tgz
-tar -xzf pobo-cli-2.0.0.tgz         # extracts ./package/
+npm pack @pobo/cli@2.1.0            # downloads pobo-cli-2.1.0.tgz
+tar -xzf pobo-cli-2.1.0.tgz         # extracts ./package/
 diff -r package/ <this-repo-checkout>     # should be empty
 ```
 

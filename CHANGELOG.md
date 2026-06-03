@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `pobo widget copyable [id]` — manage which element CSS classes are duplicatable in the editor (the per-element "+"/trash overlay). Supports `--list`, `--add`, `--remove`, `--set`, `--clear`, or an interactive checkbox built from the classes found in the widget's own HTML. Edits `widget.json` and syncs the server in one step.
+- `widget.json` now carries an optional `copyable_class` array (defaults to `[]` for new scaffolds; existing manifests are read back-compatibly). `pobo widget push` ships it alongside the HTML/CSS.
+
 ## [2.0.0] - 2026-05-15
 
 - `pobo widget ai <id> --image <path>` — generate widget HTML/SCSS from a design image (PNG/JPG/WebP, up to 5 MB).

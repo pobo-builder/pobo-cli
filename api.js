@@ -118,9 +118,20 @@ export const api = {
     showWidget: (token, id, apiUrl) => request('GET', sprintf('/widget/%s', id), { token, apiUrl }),
     deleteWidget: (token, id, apiUrl) => request('DELETE', sprintf('/widget/%s', id), { token, apiUrl }),
     parseWidget: (token, id, html, apiUrl) => request('POST', sprintf('/widget/%s/parse', id), { token, body: { html }, apiUrl }),
-    pushWidget: (token, id, widget, apiUrl) => {
+    pushWidget: (token, id, widget, copyableClass, apiUrl) => {
         const body = { widget };
+        if (Array.isArray(copyableClass)) {
+            body.copyable_class = copyableClass;
+        }
         return request('POST', sprintf('/widget/%s/push', id), { token, body, apiUrl });
+    },
+    updateCopyableClass: (token, id, copyableClass, apiUrl) => {
+        const body = { copyable_class: copyableClass };
+        return request('PUT', sprintf('/widget/%s/copyable-class', id), {
+            token,
+            body,
+            apiUrl,
+        });
     },
     updateCss: (token, id, args, apiUrl) => {
         const body = { css: args.css };

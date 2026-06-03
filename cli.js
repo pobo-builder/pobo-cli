@@ -10,6 +10,7 @@ import { aiCommand } from './commands/widget/ai.js';
 import { createCommand } from './commands/widget/create.js';
 import { deleteCommand } from './commands/widget/delete.js';
 import { pushCommand } from './commands/widget/push.js';
+import { copyableCommand } from './commands/widget/copyable.js';
 import { validateCommand } from './commands/widget/validate.js';
 import { connectCommand } from './commands/widget/connect.js';
 import { connectionsCommand } from './commands/widget/connections.js';
@@ -82,6 +83,15 @@ const buildProgram = () => {
         .description('Push widget to server (HTML + compiled CSS)')
         .option('-y, --yes', 'skip post-push follow-up prompt')
         .action(wrap((id, options) => pushCommand({ id, yes: options.yes })));
+    widget
+        .command('copyable [id]')
+        .description('Manage which element classes are duplicatable in the editor')
+        .option('-l, --list', 'list current copyable classes and exit')
+        .option('-a, --add <classes>', 'comma-separated class names to add')
+        .option('-r, --remove <classes>', 'comma-separated class names to remove')
+        .option('-s, --set <classes>', 'replace the list with these comma-separated class names')
+        .option('-c, --clear', 'remove all copyable classes')
+        .action(wrap((id, options) => copyableCommand({ id, ...options })));
     widget
         .command('validate [id]')
         .description('Validate widget HTML')
