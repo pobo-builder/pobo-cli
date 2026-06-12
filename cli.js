@@ -22,6 +22,11 @@ import { listCommand } from './commands/widget/list.js';
 import { showCommand } from './commands/widget/show.js';
 import { doctorCommand } from './commands/system/doctor.js';
 import { initCommand } from './commands/system/init.js';
+import { listCommand as assetListCommand } from './commands/asset/list.js';
+import { createCommand as assetCreateCommand } from './commands/asset/create.js';
+import { pushCommand as assetPushCommand } from './commands/asset/push.js';
+import { deleteCommand as assetDeleteCommand } from './commands/asset/delete.js';
+import { proxyCommand as assetProxyCommand } from './commands/asset/proxy.js';
 import { sprintf } from './utils/sprintf.js';
 let inRepl = false;
 const wrap = (fn) => {
@@ -136,6 +141,41 @@ const buildProgram = () => {
         selector: options.selector,
         open: options.open,
     })));
+    const asset = program.command('asset').description('Eshop JS/CSS asset management (compiled locally, pushed to the CDN bundle)');
+    asset
+        .command('list')
+        .description('List the CLI-managed assets of an eshop')
+        .option('-e, --eshop <id>', 'eshop ID (interactive picker when omitted)')
+        .action(wrap((options) => assetListCommand({ eshop: options.eshop })));
+    asset
+        .command('create [file]')
+        .description('Scaffold a new asset (interactive wizard) or register an existing SCSS/CSS/JS file in pobo.json')
+        .option('-e, --eshop <id>', 'eshop ID (interactive picker when omitted)')
+        .option('-n, --name <name>', 'asset name (prompted when omitted)')
+        .action(wrap((file, options) => assetCreateCommand({ file, eshop: options.eshop, name: options.name })));
+    asset
+        .command('push')
+        .description('Compile and push all pobo.json asset targets to the server')
+        .option('-e, --eshop <id>', 'push only targets of this eshop')
+        .action(wrap((options) => assetPushCommand({ eshop: options.eshop })));
+    asset
+        .command('proxy [url]')
+        .description('Live preview the eshop with local assets injected (CSS hot reload, JS page reload)')
+        .option('-e, --eshop <id>', 'eshop ID (interactive picker when omitted)')
+        .option('-p, --port <port>', 'Preview server port', '3001')
+        .option('--no-open', 'do not auto-open the preview URL in the browser')
+        .action(wrap((url, options) => assetProxyCommand({
+        url,
+        eshop: options.eshop,
+        port: parseInt(options.port, 10),
+        open: options.open,
+    })));
+    asset
+        .command('delete [id]')
+        .description('Delete a CLI-managed asset from the server and remove its manifest target')
+        .option('-e, --eshop <id>', 'eshop ID (interactive picker when omitted)')
+        .option('-y, --yes', 'skip confirmation prompt')
+        .action(wrap((id, options) => assetDeleteCommand({ id, eshop: options.eshop, yes: options.yes })));
     program
         .command('doctor')
         .description('Health check: environment, config, connectivity, local widgets')

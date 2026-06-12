@@ -135,6 +135,21 @@ pobo auth me                     Current user info + e-shop list
 
 All commands accept `--help`. Commands with `<id>` resolve automatically when run from inside `widgets/<id>/`.
 
+## E-shop assets (`pobo asset`) — global JS/CSS
+
+Besides widgets, the CLI manages an e-shop's global stylesheets and scripts (served on every page of the e-shop). Sources live in this repository; the mapping to e-shops is in `pobo.json` (plain JSON, no comments). SCSS compiles locally on push — multi-file `@use` partials are fine.
+
+```
+pobo asset create                Scaffold a new asset (wizard: e-shop → type → name) into assets/<eshop_id>/
+pobo asset create <file>         Register an existing SCSS/CSS/JS file in pobo.json
+pobo asset push                  Deploy: compile + upload every target listed in pobo.json
+pobo asset proxy                 Live preview the e-shop with local assets (CSS hot reload, browse-through)
+pobo asset list                  List CLI-managed assets of an e-shop
+pobo asset delete [id] -y        Delete from server + remove the manifest target
+```
+
+Asset workflow: `pobo asset create` (or edit `pobo.json` by hand — a target with only `eshop_id` is created on the next push) → write styles/code → `pobo asset push`. `create` never deploys; `push` is the single deploy step. The compiled artifact must stay under 256 KB, and a source that compiles to empty output is rejected locally. Widget rules below do NOT apply to assets — assets are your own custom code.
+
 ---
 
 <!--

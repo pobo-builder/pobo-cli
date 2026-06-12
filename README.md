@@ -6,7 +6,7 @@ CLI tool for creating widgets for Pobo Page Builder locally in your editor (HTML
 [![Node](https://img.shields.io/badge/node-%E2%89%A520.12-brightgreen.svg)](https://nodejs.org/)
 [![npm](https://img.shields.io/npm/v/@pobo/cli.svg)](https://www.npmjs.com/package/@pobo/cli)
 
-> **About this repository:** This is the public **build artifact mirror** of [`@pobo/cli`](https://www.npmjs.com/package/@pobo/cli). Source code lives in a private repository; this mirror exists so anyone can audit the JavaScript that ships to npm. The contents here are produced by the same release pipeline that publishes to npm, and you can verify integrity by comparing `npm pack @pobo/cli@2.1.0` against this repo at tag `v2.1.0`.
+> **About this repository:** This is the public **build artifact mirror** of [`@pobo/cli`](https://www.npmjs.com/package/@pobo/cli). Source code lives in a private repository; this mirror exists so anyone can audit the JavaScript that ships to npm. The contents here are produced by the same release pipeline that publishes to npm, and you can verify integrity by comparing `npm pack @pobo/cli@2.2.0` against this repo at tag `v2.2.0`.
 
 ---
 
@@ -106,6 +106,12 @@ pobo widget delete [id]      Delete the widget from the server (cannot be undone
 pobo widget preview [id]     Open the widget preview page in your browser
 pobo widget proxy [url]      Live preview the widget on a real e-shop page
 
+pobo asset list              List the CLI-managed JS/CSS assets of an e-shop
+pobo asset create [file]     Scaffold a new asset (wizard) or register an existing file
+pobo asset push              Compile and push all assets listed in pobo.json
+pobo asset proxy [url]       Live preview the e-shop with your local assets (hot reload)
+pobo asset delete [id]       Delete a CLI-managed asset from the server
+
 pobo doctor                  Health check (env / config / connectivity / local widgets)
 pobo init                    Write CLAUDE.md to current directory (for Claude Code context)
 pobo help                    Show help
@@ -163,6 +169,60 @@ pobo widget proxy https://my-eshop.example.com --selector '.basic-description'
 Starts a local HTTP server (default port `3001`, auto-falls back to next free port if busy) and **auto-opens the preview URL in your browser**. The widget HTML/CSS is injected into the element matching `--selector`. Saves to local `.html`/`.scss` trigger an SSE-driven auto-update in the browser — no manual reload, no upload to production. Pass `--no-open` to skip the auto-open (handy in headless environments / over SSH).
 
 Run without arguments to start an interactive wizard that asks for the URL and selector.
+
+## E-shop assets (`pobo asset`)
+
+Besides widgets, the CLI can manage the global JS/CSS assets of an e-shop — the stylesheets and scripts served on every page. Keep the sources (SCSS, JS) in your git repository; the CLI compiles SCSS locally and uploads the finished artifact. CLI assets and admin-created assets are strictly separated: each side sees and manages only its own, so nobody overwrites anyone's work. Both end up in the same CDN bundle on your e-shop.
+
+The mapping between local files and e-shop assets lives in a `pobo.json` manifest (plain JSON, committed to git):
+
+```json
+{
+  "asset": [
+    {
+      "source": "assets/main.scss",
+      "type": "style",
+      "name": "Main styles",
+      "target": [
+        { "eshop_id": 352, "asset_id": 1201 },
+        { "eshop_id": 4339, "asset_id": 1202 }
+      ]
+    },
+    {
+      "source": "assets/tracking.js",
+      "type": "javascript",
+      "name": "Tracking",
+      "target": [{ "eshop_id": 352, "asset_id": 1203 }]
+    }
+  ]
+}
+```
+
+Workflow:
+
+```bash
+# 1) Scaffold a new asset — interactive wizard (e-shop → type → name).
+#    Creates assets/<eshop_id>/<slug>.scss and records it in pobo.json.
+pobo asset create
+
+#    Already have the file? Register it instead:
+pobo asset create assets/main.scss --eshop 352 --name "Main styles"
+
+# 2) Edit the source, then deploy every target listed in pobo.json.
+#    First push creates the asset on the server and fills in its asset_id.
+pobo asset push
+
+# 3) Same asset on another e-shop? Add a target with just an eshop_id —
+#    the next push creates it there too
+```
+
+`create` never touches the server — it only prepares local files and the manifest. `push` is the single deploy step.
+
+While iterating, `pobo asset proxy` serves the real e-shop through a local proxy with your **local** assets injected in place of the deployed ones: SCSS edits hot-swap the styles without a page reload, JS edits reload the page. `@use` partials are watched too. Internal links are rewritten to the proxy, so you can click through the whole e-shop and see your local assets on every page. Note: admin-created assets are not part of the preview, and form submissions (cart, checkout) go to the real e-shop.
+
+`pobo asset push` updates every `target` of every entry: SCSS is compiled with `sass` (compressed), `.css`/`.js` files are uploaded as-is. Targets without an `asset_id` are created on the spot and the id is written back to the manifest. A failed e-shop doesn't stop the rest — you get a per-target summary at the end. The compiled artifact must stay under 256 kB.
+
+Sources live in your git repository only — the server stores just the compiled artifact, so keep the repo committed.
 
 ## Widget folder layout
 
@@ -233,8 +293,8 @@ Run `pobo doctor` first — it checks Node version, config file, API reachabilit
 Compare the npm tarball against this repo at the matching tag:
 
 ```bash
-npm pack @pobo/cli@2.1.0            # downloads pobo-cli-2.1.0.tgz
-tar -xzf pobo-cli-2.1.0.tgz         # extracts ./package/
+npm pack @pobo/cli@2.2.0            # downloads pobo-cli-2.2.0.tgz
+tar -xzf pobo-cli-2.2.0.tgz         # extracts ./package/
 diff -r package/ <this-repo-checkout>     # should be empty
 ```
 

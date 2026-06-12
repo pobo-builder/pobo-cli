@@ -154,6 +154,10 @@ export const api = {
         const body = { eshop_id: eshopId };
         return request('POST', sprintf('/widget/%s/disconnect', id), { token, body, apiUrl });
     },
+    listAssets: (token, eshopId, apiUrl) => request('GET', sprintf('/eshop/%s/asset', eshopId), { token, apiUrl }),
+    createAsset: (token, eshopId, body, apiUrl) => request('POST', sprintf('/eshop/%s/asset', eshopId), { token, body, apiUrl }),
+    updateAsset: (token, eshopId, assetId, body, apiUrl) => request('PUT', sprintf('/eshop/%s/asset/%s', eshopId, assetId), { token, body, apiUrl }),
+    deleteAsset: (token, eshopId, assetId, apiUrl) => request('DELETE', sprintf('/eshop/%s/asset/%s', eshopId, assetId), { token, apiUrl }),
     generateWidgetAi: (token, id, image, apiUrl) => {
         const formData = new FormData();
         formData.append('image', image.blob, image.filename);

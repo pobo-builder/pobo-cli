@@ -5,12 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
+## [2.2.0] - 2026-06-12
 
 - `pobo widget copyable [id]` — manage which element CSS classes are duplicatable in the editor (the per-element "+"/trash overlay). Supports `--list`, `--add`, `--remove`, `--set`, `--clear`, or an interactive checkbox built from the classes found in the widget's own HTML. Edits `widget.json` and syncs the server in one step.
 - `widget.json` now carries an optional `copyable_class` array (defaults to `[]` for new scaffolds; existing manifests are read back-compatibly). `pobo widget push` ships it alongside the HTML/CSS.
+- `pobo asset` command group (`list`, `create [file]`, `push`, `proxy [url]`, `delete [id]`) — manage an e-shop's global JS/CSS assets from local sources. SCSS compiles locally (same compiler as widget push); the compiled artifact is uploaded, sources stay in your git repository.
+- `pobo asset create` without arguments runs an interactive wizard (e-shop → type → name) and scaffolds `assets/<eshop_id>/<slug>.scss|js`; with a file argument it registers an existing source. Creating is local-only — `pobo asset push` is the single deploy step.
+- `pobo.json` manifest maps local source files to e-shop assets (one file can target multiple e-shops). `pobo asset push` updates every listed target and creates the ones without an `asset_id`, writing the new id back. Sources that compile to an empty artifact are rejected locally before any upload.
+- CLI assets and admin-created assets are strictly separated — each side sees and manages only its own, while both end up in the same CDN bundle.
+- `pobo asset proxy [url]` — live preview of the e-shop with your local assets injected in place of the deployed ones. CSS edits hot-swap without a reload (including `@use` partials), JS edits reload the page; `--no-open` skips the browser. Internal links are rewritten so you can browse the whole e-shop through the proxy with your local assets on every page.
 
 ## [2.0.0] - 2026-05-15
 

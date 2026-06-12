@@ -8,4 +8,4 @@
 // precedence over the baked frontend URL.
 export const PUBLIC_DEFAULT_API_URL = "https://api.pobo.space/api/v3/cli";
 export const PUBLIC_DEFAULT_FRONTEND_URL = "https://client.pobo.space";
-export const PUBLIC_VERSION = "2.1.0";
+export const PUBLIC_VERSION = "2.2.0";
