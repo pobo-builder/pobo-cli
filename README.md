@@ -3,10 +3,10 @@
 CLI tool for creating widgets for Pobo Page Builder locally in your editor (HTML + SCSS) instead of through the admin UI.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Node](https://img.shields.io/badge/node-%E2%89%A520.12-brightgreen.svg)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/node-%E2%89%A522.12-brightgreen.svg)](https://nodejs.org/)
 [![npm](https://img.shields.io/npm/v/@pobo/cli.svg)](https://www.npmjs.com/package/@pobo/cli)
 
-> **About this repository:** This is the public **build artifact mirror** of [`@pobo/cli`](https://www.npmjs.com/package/@pobo/cli). Source code lives in a private repository; this mirror exists so anyone can audit the JavaScript that ships to npm. The contents here are produced by the same release pipeline that publishes to npm, and you can verify integrity by comparing `npm pack @pobo/cli@2.2.0` against this repo at tag `v2.2.0`.
+> **About this repository:** This is the public **build artifact mirror** of [`@pobo/cli`](https://www.npmjs.com/package/@pobo/cli). Source code lives in a private repository; this mirror exists so anyone can audit the JavaScript that ships to npm. The contents here are produced by the same release pipeline that publishes to npm, and you can verify integrity by comparing `npm pack @pobo/cli@3.0.0` against this repo at tag `v3.0.0`.
 
 ---
 
@@ -22,7 +22,7 @@ yarn global add @pobo/cli
 
 ## Requirements
 
-- **Node.js ≥ 20.12**
+- **Node.js ≥ 22.12**
 - A Pobo account with at least one e-shop
 
 ## Quickstart
@@ -293,8 +293,8 @@ Run `pobo doctor` first — it checks Node version, config file, API reachabilit
 Compare the npm tarball against this repo at the matching tag:
 
 ```bash
-npm pack @pobo/cli@2.2.0            # downloads pobo-cli-2.2.0.tgz
-tar -xzf pobo-cli-2.2.0.tgz         # extracts ./package/
+npm pack @pobo/cli@3.0.0            # downloads pobo-cli-3.0.0.tgz
+tar -xzf pobo-cli-3.0.0.tgz         # extracts ./package/
 diff -r package/ <this-repo-checkout>     # should be empty
 ```
 

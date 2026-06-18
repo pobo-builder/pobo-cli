@@ -6,7 +6,7 @@ import Table from 'cli-table3';
 import { api } from '../../api.js';
 import { getApiUrl, readConfig } from '../../config.js';
 import { sprintf } from '../../utils/sprintf.js';
-const NODE_REQUIRED = '20.12.0';
+const NODE_REQUIRED = '22.12.0';
 const compareVersions = (a, b) => {
     const aParts = a.split('.').map((n) => parseInt(n, 10));
     const bParts = b.split('.').map((n) => parseInt(n, 10));
